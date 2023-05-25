@@ -1,5 +1,5 @@
 -- Database: covid
-
+-- DATA FROM https://ourworldindata.org/covid-deaths
 --Check and change data types of columns
 ALTER TABLE covid_death
 ALTER COLUMN date TYPE date USING to_date(date, 'dd-mm-yyyy'),
@@ -20,19 +20,20 @@ ORDER BY location, date;
 --Total Cases vs Total Deaths
 SELECT location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 AS pct_death
 FROM covid_death
-WHERE location LIKE 'United States'
+WHERE continent IS NOT NULL
 ORDER BY date;
 
 --Total Cases vs Population
 SELECT location, date, total_cases, population, (total_cases/population)*100 AS pct_cases
 FROM covid_death
-WHERE location LIKE 'United States'
+WHERE continent IS NOT NULL
 ORDER BY date;
 
 --Countries with highest infection rate
 --Includes reinfection, thus inflated numbers
 SELECT location, population, MAX(total_cases) AS highest_infection_count, MAX(total_cases/population)*100 AS max_pct_cases
 FROM covid_death
+WHERE continent IS NOT NULL
 GROUP BY location, population
 ORDER BY max_pct_cases DESC;
 
